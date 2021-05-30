@@ -1,8 +1,8 @@
-train: ../dataset/images/
-val: ../dataset/images/
+train: ../dataset/train/images/
+val: ../dataset/test/images/
 
 # number of classes
-nc: 51
+nc: 48
 
 # class names
-names: ['can', 'telefono', 'luz', 'ordenador', 'caja', 'manzana', 'mesa', 'coche', 'barbacoa', 'pisarra', 'semaforo', 'monitor', 'cama', 'pelota', 'llave', 'teclado', 'armario', 'piedra', 'contenedor', 'enchufe', 'arbol', 'retrete', 'plato', 'lavadora', 'atm', 'tenedor', 'cuadro', 'sofa', 'botella', 'raton', 'alfombra', 'bocaincendios', 'bus', 'ventana', 'libro', 'puerta', 'casa', 'cono', 'casco', 'flor', 'banera', 'extintor', 'silla', 'senal', 'lampara', 'estufa', 'fregadero', 'televisor', 'reloj', 'horno', 'persona']
+names: ['contenedor', 'luz', 'silla', 'cama', 'semaforo', 'sofa', 'tenedor', 'estufa', 'teclado', 'llave', 'monitor', 'horno', 'persona', 'reloj', 'pelota', 'alfombra', 'cono', 'casa', 'fregadero', 'ordenador', 'bus', 'manzana', 'puerta', 'casco', 'pisarra', 'plato', 'ventana', 'coche', 'piedra', 'mesa', 'retrete', 'caja', 'libro', 'televisor', 'senal', 'barbacoa', 'banera', 'extintor', 'atm', 'arbol', 'telefono', 'armario', 'lampara', 'bocaincendios', 'flor', 'enchufe', 'cuadro', 'raton']
