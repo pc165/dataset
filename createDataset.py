@@ -192,7 +192,7 @@ for name in range(int(NUM_IMG * 1.5)):
 
     bb2 = bbReduce(bb)
 
-    path = 'train' if name > NUM_IMG == 0 else 'test'
+    path = 'train' if name < NUM_IMG else 'test'
 
     out = open(f"./{path}/labels/{name}.txt", 'w')
     out2 = open(f"./{path}/labels/{name}_noisy.txt", 'w')
