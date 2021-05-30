@@ -30,7 +30,7 @@ def getNumber(name) -> int:
     return LABEL_NUMBER[name]
 
 
-def get_iou(bb1, bb2):
+def get_heuristic(bb1, bb2):
     # https://stackoverflow.com/questions/25349178/calculating-percentage-of-bounding-box-overlap-for-image-detector-evaluation
     """
     Calculate the Intersection over Union (IoU) of two bounding boxes.
@@ -53,8 +53,6 @@ def get_iou(bb1, bb2):
         in [0, 1]
     """
     x, y, w, h = bb1
-    w_m = min(bb1[2], bb2[2])
-    h_m = min(bb1[3], bb2[3])
     b1 = {'x1': x, 'y1': y, 'x2': x + w, 'y2': y + h}
     x, y, w, h = bb2
     b2 = {'x1': x, 'y1': y, 'x2': x + w, 'y2': y + h}
@@ -63,7 +61,6 @@ def get_iou(bb1, bb2):
     assert b2['x1'] < b2['x2']
     assert b2['y1'] < b2['y2']
 
-    # determine the coordinates of the intersection rectangle
     x_left = max(b1['x1'], b2['x1'])
     y_top = max(b1['y1'], b2['y1'])
     x_right = min(b1['x2'], b2['x2'])
@@ -72,24 +69,10 @@ def get_iou(bb1, bb2):
     if x_right < x_left or y_bottom < y_top:
         return 0.0
 
-    # The intersection of two axis-aligned bounding boxes is always an
-    # axis-aligned bounding box.
-    # NOTE: We MUST ALWAYS add +1 to calculate area when working in
-    # screen coordinates, since 0,0 is the top left pixel, and w-1,h-1
-    # is the bottom right pixel. If we DON'T add +1, the result is wrong.
     intersection_area = (x_right - x_left + 1) * (y_bottom - y_top + 1)
-    # return max(intersection_area / (h_max * w_max),  (h_max * w_max) / intersection_area)
-    # compute the area of both AABBs
     bb1_area = (b1['x2'] - b1['x1'] + 1) * (b1['y2'] - b1['y1'] + 1)
-    bb2_area = (b2['x2'] - b2['x1'] + 1) * (b2['y2'] - b2['y1'] + 1)
 
-    # compute the intersection over union by taking the intersection
-    # area and dividing it by the sum of prediction + ground-truth
-    # areas - the interesection area
-    iou = intersection_area / float(bb1_area + bb2_area - intersection_area)
-    assert iou >= 0.0
-    assert iou <= 1.0
-    return iou
+    return intersection_area / bb1_area
 
 
 def placeObject(obj, background, label):
@@ -172,23 +155,25 @@ def bbReduce(bb: list):
     bb2 = {}
     for i in bb:
         for j in bb:
-            if i == j or (i, j) in bb2 or (j, i) in bb2:
+            if i == j:
                 continue
-            overlapArea = get_iou(i[1], j[1])
-            bb2[(i, j)] = overlapArea
-            print(overlapArea, i, j)
-            # if overlapArea < 0.4:
-            #     bb2.append(i)
-    print()
+
+            v = get_heuristic(i[1], j[1])
+
+            if v == 0:
+                continue
+
+            bb2[(i, j)] = v
+
+
     for (i, j), val in bb2.items():
-        if val > 0.4:
-            try:
-                if bbpriority[i] > bbpriority[j]:
-                    bb.remove(j)
-                else:
+        if val > 0.45:
+            if bbpriority[i] < bbpriority[j]:
+                try:
                     bb.remove(i)
-            except:
-                pass
+                except:
+                    pass
+    # print(bb2, '\n')
 
     return bb
 
@@ -196,7 +181,7 @@ def bbReduce(bb: list):
 ITEM_LIST = list(ITEMS.items())
 NUM_IMG = 256
 random.seed(111)
-for name in range(int(NUM_IMG*1.5)):
+for name in range(int(NUM_IMG * 1.5)):
     classes = random.sample(ITEM_LIST, random.randint(2, 6))
     objs = [(i[0], random.choice(i[1])) for i in classes]
     background = random.choice(BACKGROUND)
@@ -228,14 +213,9 @@ for name in range(int(NUM_IMG*1.5)):
         out2.write(s)
     out.close()
     out2.close()
-    # show(anotated)
     cv2.imwrite(f"./{path}/labels/{name}.jpg", anotated)
-    # bb2 = bbReduce(bb)
-
-    # cv2.imwrite(f"./labels/{name}_noisy.jpg", noisy(anotated))
     cv2.imwrite(f"./{path}/images/{name}.jpg", background)
     cv2.imwrite(f"./{path}/images/{name}_noisy.jpg", noisy(background))
-    # exit()
 
 l = list(LABEL_NUMBER.items())
 l.sort(key=lambda x: x[1])
