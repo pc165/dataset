@@ -179,7 +179,7 @@ def bbReduce(bb: list):
 
 
 ITEM_LIST = list(ITEMS.items())
-NUM_IMG = 256
+NUM_IMG = 128
 random.seed(111)
 for name in range(int(NUM_IMG * 1.5)):
     classes = random.sample(ITEM_LIST, random.randint(2, 6))
