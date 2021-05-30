@@ -1,0 +1,8 @@
+train: ../dataset/images/
+val: ../dataset/images/
+
+# number of classes
+nc: 51
+
+# class names
+names: ['can', 'telefono', 'luz', 'ordenador', 'caja', 'manzana', 'mesa', 'coche', 'barbacoa', 'pisarra', 'semaforo', 'monitor', 'cama', 'pelota', 'llave', 'teclado', 'armario', 'piedra', 'contenedor', 'enchufe', 'arbol', 'retrete', 'plato', 'lavadora', 'atm', 'tenedor', 'cuadro', 'sofa', 'botella', 'raton', 'alfombra', 'bocaincendios', 'bus', 'ventana', 'libro', 'puerta', 'casa', 'cono', 'casco', 'flor', 'banera', 'extintor', 'silla', 'senal', 'lampara', 'estufa', 'fregadero', 'televisor', 'reloj', 'horno', 'persona']
