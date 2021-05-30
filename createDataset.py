@@ -165,9 +165,9 @@ for img, i in IMGS:
             ITEMS[cl].append(obj)
 
 ITEM_LIST = list(ITEMS.items())
-NUM_IMG = 300
+NUM_IMG = 256
 
-for name in range(NUM_IMG):
+for name in range(NUM_IMG*2):
     classes = random.sample(ITEM_LIST, random.randint(2, 5))
     objs = [(i[0], random.choice(i[1])) for i in classes]
     background = random.choice(BACKGROUND)
@@ -184,8 +184,11 @@ for name in range(NUM_IMG):
             overlapArea = get_iou(bb1[1], bb2[1])
             if overlapArea < 0.4:
                 boundingBoxes2.append(bb1)
-    out = open(f"./labels/{name}.txt", 'w')
-    out2 = open(f"./labels/{name}_noisy.txt", 'w')
+
+    path = 'train' if name % 2 == 0 else 'test'
+
+    out = open(f"./{path}/labels/{name}.txt", 'w')
+    out2 = open(f"./{path}/labels/{name}_noisy.txt", 'w')
     im_h, im_w, _ = background.shape
     anotated = background.copy()
     for label, (x, y, w, h) in boundingBoxes2:
@@ -205,14 +208,14 @@ for name in range(NUM_IMG):
     out2.close()
     # cv2.imwrite(f"./labels/{name}.jpg", anotated)
     # cv2.imwrite(f"./labels/{name}_noisy.jpg", noisy(anotated))
-    cv2.imwrite(f"./images/{name}.jpg", background)
-    cv2.imwrite(f"./images/{name}_noisy.jpg", noisy(background))
+    cv2.imwrite(f"./{path}/images/{name}.jpg", background)
+    cv2.imwrite(f"./{path}/images/{name}_noisy.jpg", noisy(background))
 
 l = list(LABEL_NUMBER.items())
 l.sort(key=lambda x: x[1])
 l = [i[0] for i in l]
-s = f"""train: ../dataset/images/
-val: ../dataset/images/
+s = f"""train: ../dataset/train/images/
+val: ../dataset/test/images/
 
 # number of classes
 nc: {len(l)}
